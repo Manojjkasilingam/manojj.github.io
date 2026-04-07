@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galaxy Frontier | Ticketreat</title>
+  <meta name="description" content="Explore Galaxy Frontier on Ticketreat. View movie details, watch the trailer, and find where to watch." />
+  <style>
+    :root{
+      --bg:#050505;
+      --bg-soft:#0d0d0d;
+      --card:#101010;
+      --card-2:#151515;
+      --line:rgba(255,255,255,0.08);
+      --text:#f5f5f5;
+      --muted:#b9b9b9;
+      --neon:#adff2f;
+      --shadow:0 10px 30px rgba(0,0,0,0.35);
+      --radius:28px;
+      --radius-sm:16px;
+      --max:1200px;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(173,255,47,0.08), transparent 22%),
+        radial-gradient(circle at top left, rgba(173,255,47,0.04), transparent 18%),
+        var(--bg);
+      color:var(--text);
+    }
+
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    img{
+      display:block;
+      max-width:100%;
+    }
+
+    .container{
+      width:min(100% - 32px, var(--max));
+      margin:auto;
+    }
+
+    .site-header{
+      position:sticky;
+      top:0;
+      z-index:40;
+      backdrop-filter:blur(12px);
+      background:rgba(5,5,5,0.8);
+      border-bottom:1px solid var(--line);
+    }
+
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:16px 0;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      font-size:24px;
+      letter-spacing:-0.5px;
+    }
+
+    .brand-badge{
+      width:36px;
+      height:36px;
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg, rgba(173,255,47,0.2), rgba(173,255,47,0.05));
+      border:1px solid rgba(173,255,47,0.28);
+      box-shadow:0 0 20px rgba(173,255,47,0.08);
+    }
+
+    .nav-links{
+      display:none;
+      gap:24px;
+      align-items:center;
+    }
+
+    .nav-links a{
+      color:var(--muted);
+      font-size:15px;
+    }
+
+    .nav-links a:hover{
+      color:var(--text);
+    }
+
+    .nav-cta{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:44px;
+      padding:0 16px;
+      border-radius:999px;
+      border:1px solid rgba(173,255,47,0.25);
+      color:var(--neon);
+      background:rgba(173,255,47,0.06);
+      font-weight:700;
+      font-size:14px;
+    }
+
+    .page{
+      padding:34px 0 28px;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:22px;
+      align-items:stretch;
+    }
+
+    .poster-panel{
+      overflow:hidden;
+      border-radius:32px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      box-shadow:var(--shadow);
+    }
+
+    .poster-panel img{
+      width:100%;
+      aspect-ratio:16/10;
+      object-fit:cover;
+    }
+
+    .detail-panel{
+      border:1px solid var(--line);
+      border-radius:32px;
+      padding:22px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      box-shadow:var(--shadow);
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(173,255,47,0.08);
+      border:1px solid rgba(173,255,47,0.18);
+      color:var(--neon);
+      font-size:13px;
+      font-weight:700;
+      margin-bottom:16px;
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size:38px;
+      line-height:1.05;
+      letter-spacing:-1.2px;
+    }
+
+    .subtitle{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.6;
+    }
+
+    .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:18px;
+    }
+
+    .meta span{
+      padding:9px 13px;
+      border-radius:999px;
+      background:#111;
+      border:1px solid var(--line);
+      color:#dadada;
+      font-size:13px;
+    }
+
+    .synopsis{
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.75;
+      margin:0 0 22px;
+    }
+
+    .action-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+
+    .btn{
+      min-height:48px;
+      padding:0 18px;
+      border-radius:16px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      border:1px solid transparent;
+      transition:0.2s ease;
+      font-size:14px;
+    }
+
+    .btn-primary{
+      background:var(--neon);
+      color:#000;
+    }
+
+    .btn-secondary{
+      background:#111;
+      color:var(--text);
+      border-color:var(--line);
+    }
+
+    .btn:hover{
+      transform:translateY(-1px);
+    }
+
+    .section{
+      padding:16px 0 8px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:18px;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:20px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      box-shadow:var(--shadow);
+    }
+
+    .card h2{
+      margin:0 0 12px;
+      font-size:24px;
+      letter-spacing:-0.6px;
+    }
+
+    .card p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.75;
+      font-size:15px;
+    }
+
+    .trailer-box{
+      overflow:hidden;
+      border-radius:22px;
+      border:1px solid var(--line);
+      background:#0b0b0b;
+      margin-top:14px;
+    }
+
+    .trailer-box iframe{
+      width:100%;
+      height:240px;
+      border:0;
+      display:block;
+    }
+
+    .cast-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .cast-item{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+      background:#111;
+    }
+
+    .cast-item strong{
+      display:block;
+      font-size:15px;
+      margin-bottom:4px;
+    }
+
+    .cast-item span{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .watch-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .watch-card{
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:16px;
+      background:#111;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .watch-card strong{
+      font-size:17px;
+    }
+
+    .watch-card p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.6;
+      margin:0;
+    }
+
+    .watch-btn{
+      margin-top:4px;
+      min-height:44px;
+      border-radius:14px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:var(--neon);
+      color:#000;
+      font-weight:800;
+      width:100%;
+    }
+
+    .back-link{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--neon);
+      font-weight:700;
+      margin-bottom:16px;
+      font-size:14px;
+    }
+
+    .footer{
+      padding:28px 0 40px;
+      color:#8f8f8f;
+      font-size:13px;
+    }
+
+    .footer-box{
+      border-top:1px solid var(--line);
+      padding-top:18px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    @media (min-width: 768px){
+      .nav-links{
+        display:flex;
+      }
+
+      .page{
+        padding:40px 0 30px;
+      }
+
+      .hero{
+        grid-template-columns:0.95fr 1.05fr;
+      }
+
+      h1{
+        font-size:56px;
+      }
+
+      .grid{
+        grid-template-columns:1.1fr 0.9fr;
+      }
+
+      .cast-grid{
+        grid-template-columns:repeat(3, minmax(0,1fr));
+      }
+
+      .watch-grid{
+        grid-template-columns:repeat(2, minmax(0,1fr));
+      }
+
+      .trailer-box iframe{
+        height:340px;
+      }
+    }
+
+    @media (min-width: 1024px){
+      .detail-panel{
+        padding:28px;
+      }
+
+      .card{
+        padding:24px;
+      }
+
+      .trailer-box iframe{
+        height:400px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container nav">
+      <a href="index.html" class="brand">
+        <span class="brand-badge">🎬</span>
+        <span>Ticketreat</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html#featured">Featured</a>
+        <a href="index.html#now-showing">Now Showing</a>
+        <a href="#watch">Where to Watch</a>
+      </nav>
+
+      <a href="index.html" class="nav-cta">Back to Home</a>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="container">
+      <a href="index.html" class="back-link">← Back to Homepage</a>
+
+      <section class="hero">
+        <div class="poster-panel">
+          <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1400&q=80" alt="Galaxy Frontier movie poster" />
+        </div>
+
+        <div class="detail-panel">
+          <div class="eyebrow">Featured Sci-Fi Adventure</div>
+          <h1>Galaxy Frontier</h1>
+          <p class="subtitle">
+            A high-stakes sci-fi adventure that takes audiences across deep space, dangerous missions, and unforgettable discoveries.
+          </p>
+
+          <div class="meta">
+            <span>Sci-Fi</span>
+            <span>Adventure</span>
+            <span>English</span>
+            <span>2h 08m</span>
+            <span>PG-13</span>
+          </div>
+
+          <p class="synopsis">
+            In a future shaped by interstellar exploration, a skilled crew is sent to the edge of known space after a mysterious signal is detected beyond the frontier. What begins as a bold mission soon turns into a fight for survival as they uncover secrets that could change humanity’s future forever. Galaxy Frontier blends spectacle, mystery, and emotional tension into a cinematic experience made for the big screen.
+          </p>
+
+          <div class="action-row">
+            <a href="#watch" class="btn btn-primary">Find Where to Watch</a>
+            <a href="#trailer" class="btn btn-secondary">Watch Trailer</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="grid">
+          <div class="card" id="trailer">
+            <h2>Official Trailer</h2>
+            <p>
+              This is a sample trailer embed section. Later, you can replace this with the official trailer of any movie you list on Ticketreat.
+            </p>
+
+            <div class="trailer-box">
+              <iframe
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                title="Galaxy Frontier Trailer"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Cast & Crew</h2>
+            <p>
+              A clean placeholder cast section that can later be expanded with real actor names, director details, or character listings.
+            </p>
+
+            <div class="cast-grid">
+              <div class="cast-item">
+                <strong>Daniel Cross</strong>
+                <span>Lead Explorer</span>
+              </div>
+              <div class="cast-item">
+                <strong>Elena Ward</strong>
+                <span>Mission Commander</span>
+              </div>
+              <div class="cast-item">
+                <strong>Marcus Vale</strong>
+                <span>Systems Analyst</span>
+              </div>
+              <div class="cast-item">
+                <strong>Sophia Reed</strong>
+                <span>Pilot</span>
+              </div>
+              <div class="cast-item">
+                <strong>Ryan Holt</strong>
+                <span>Director</span>
+              </div>
+              <div class="cast-item">
+                <strong>Mia Turner</strong>
+                <span>Writer</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="watch">
+        <div class="card">
+          <h2>Where to Watch</h2>
+          <p>
+            This section can later hold cinema-wise redirection links. For now, these are sample buttons to show how the Ticketreat flow will work.
+          </p>
+
+          <div class="watch-grid">
+            <div class="watch-card">
+              <strong>Watch at Epix Cinemas</strong>
+              <p>Premium viewing, premium ambience, and a cinema-first experience.</p>
+              <a href="#" class="watch-btn">Go to Epix</a>
+            </div>
+
+            <div class="watch-card">
+              <strong>Watch at VOX Cinemas</strong>
+              <p>Explore standard, premium, and family-friendly viewing options.</p>
+              <a href="#" class="watch-btn">Go to VOX</a>
+            </div>
+
+            <div class="watch-card">
+              <strong>Watch at Cinepolis</strong>
+              <p>Compare another cinema option and let the user choose what fits best.</p>
+              <a href="#" class="watch-btn">Go to Cinepolis</a>
+            </div>
+
+            <div class="watch-card">
+              <strong>Watch at Novo Cinemas</strong>
+              <p>Another sample redirection option to complete the aggregator-style layout.</p>
+              <a href="#" class="watch-btn">Go to Novo</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-box">
+      <div><strong>Ticketreat</strong> — discover movies, explore details, and find where to watch.</div>
+      <div>Movie detail page sample for the first Ticketreat build.</div>
+    </div>
+  </footer>
+
+</body>
+</html>
